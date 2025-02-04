@@ -3,6 +3,10 @@ import { getQuestions } from "./api.js";
 let currentQuestion = 0;
 let questions = [];
 let score = 0;
+let timer;
+let interval;
+let currentTimeout;
+let lastSelectedBtn = null;
 
 const nextQuestionBtn = document.querySelector("#next-question");
 nextQuestionBtn.addEventListener("click", nextQuestion);
@@ -50,9 +54,13 @@ function displayQuestion() {
   const answersWrapper = document.querySelector(".answers");
   answersWrapper.innerHTML = "";
 
+  startTimer(20);
+
+  document.querySelector(".score").textContent = `Score: ${score}`;
+
   answers.forEach((answer) => {
     const btn = document.createElement("button");
-    btn.textContent = answer;
+    btn.innerHTML = answer;
     btn.classList.add("answerBtn");
 
     btn.dataset.correct =
@@ -65,11 +73,23 @@ function displayQuestion() {
 
 function checkAnswer(e) {
   const selectedBtn = e.target;
+
+  if (lastSelectedBtn && lastSelectedBtn !== selectedBtn) {
+    clearTimeout(currentTimeout);
+    lastSelectedBtn.style.backgroundColor = "";
+    lastSelectedBtn.disabled = false;
+  }
+
+  lastSelectedBtn = selectedBtn;
+
+  selectedBtn.disabled = true;
+
   selectedBtn.style.backgroundColor = "orange";
   const isCorrect = selectedBtn.dataset.correct === "true";
 
-  setTimeout(() => {
+  currentTimeout = setTimeout(() => {
     const confirmAnswer = confirm("Do you want to confirm your answer?");
+    clearInterval(interval);
     if (confirmAnswer) {
       if (isCorrect) {
         selectedBtn.style.backgroundColor = "green";
@@ -78,8 +98,16 @@ function checkAnswer(e) {
         selectedBtn.style.backgroundColor = "red";
       }
 
+      document.querySelectorAll(".answerBtn").forEach((btn) => {
+        btn.removeEventListener("click", checkAnswer);
+      });
+
       nextQuestionBtn.style.display = "block";
-    } else selectedBtn.style.backgroundColor = "";
+    } else {
+      selectedBtn.style.backgroundColor = "";
+      selectedBtn.disabled = false;
+      startTimer(timer);
+    }
   }, 2000);
 }
 
@@ -90,4 +118,28 @@ function shuffleArray(array) {
 function nextQuestion() {
   currentQuestion++;
   displayQuestion();
+}
+
+function startTimer(duration) {
+  clearInterval(interval);
+
+  timer = duration;
+  const timerDisplay = document.querySelector(".timer");
+
+  timerDisplay.textContent = `Time left: ${timer}s`;
+
+  interval = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = `Time left: ${timer}s`;
+
+    if (timer <= 0) {
+      clearInterval(interval);
+      timeIsUp();
+    }
+  }, 1000);
+}
+
+function timeIsUp() {
+  alert("Unfortunately you ran out of time.\nLet's move to the next question.");
+  nextQuestion();
 }

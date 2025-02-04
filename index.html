@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <title>Quiz</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <form id="quiz-form">
+        <label
+          >Select Category:
+          <select name="category" id="category">
+            <option value="">Any Category</option>
+            <option value="26">Animals</option>
+            <option value="25">Celebrities</option>
+            <option value="24">Arts</option>
+            <option value="23">Politics</option>
+            <option value="22">History</option>
+            <option value="21">Geography</option>
+            <option value="20">Sports</option>
+            <option value="19">Mythology</option>
+          </select>
+        </label>
+        <label
+          >Select Type:
+          <select id="difficulty">
+            <option value="">Any</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+
+        <label
+          >Select Type:
+          <select id="type">
+            <option value="">Any</option>
+            <option value="multiple">Multiple choice</option>
+            <option value="boolean">True / False</option>
+          </select>
+        </label>
+
+        <button type="submit" id="startBtn">Start Quiz</button>
+      </form>
+    </div>
+  </body>
+  <script src="./scripts/index.js"></script>
+</html>

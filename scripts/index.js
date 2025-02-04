@@ -1,5 +1,12 @@
 import { getQuestions } from "./api.js";
 
+let currentQuestion = 0;
+let questions = [];
+let score = 0;
+
+const nextQuestionBtn = document.querySelector("#next-question");
+nextQuestionBtn.addEventListener("click", nextQuestion);
+
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -17,32 +24,70 @@ form.addEventListener("submit", async function (event) {
 
   console.log(url.toString());
   try {
-    const questions = await getQuestions(url.toString());
+    questions = await getQuestions(url.toString());
     displayQuestion(questions);
   } catch (error) {
     console.error("Error fetching questions:", error);
   }
 });
 
-function displayQuestion(questions) {
-  const question = questions[0].question;
-  const answers = [
-    ...questions[0].incorrect_answers,
-    questions[0].correct_answer,
+function displayQuestion() {
+  const question = questions[currentQuestion].question;
+  let answers = [
+    ...questions[currentQuestion].incorrect_answers,
+    questions[currentQuestion].correct_answer,
   ];
 
   answers = shuffleArray(answers);
 
   console.log(question);
 
+  nextQuestionBtn.style.display = "none";
+
   const questionElement = document.querySelector(".question");
   questionElement.innerHTML = question;
 
-  for (let i = 0; i < answers.length; i++) {
-    const answer = answers[i];
-  }
+  const answersWrapper = document.querySelector(".answers");
+  answersWrapper.innerHTML = "";
+
+  answers.forEach((answer) => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.classList.add("answerBtn");
+
+    btn.dataset.correct =
+      answer === questions[currentQuestion].correct_answer ? "true" : "false";
+
+    btn.addEventListener("click", checkAnswer);
+    answersWrapper.appendChild(btn);
+  });
+}
+
+function checkAnswer(e) {
+  const selectedBtn = e.target;
+  selectedBtn.style.backgroundColor = "orange";
+  const isCorrect = selectedBtn.dataset.correct === "true";
+
+  setTimeout(() => {
+    const confirmAnswer = confirm("Do you want to confirm your answer?");
+    if (confirmAnswer) {
+      if (isCorrect) {
+        selectedBtn.style.backgroundColor = "green";
+        score++;
+      } else {
+        selectedBtn.style.backgroundColor = "red";
+      }
+
+      nextQuestionBtn.style.display = "block";
+    } else selectedBtn.style.backgroundColor = "";
+  }, 2000);
 }
 
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  displayQuestion();
 }

@@ -91,9 +91,6 @@ function displayQuestion() {
     btn.innerHTML = answer;
     btn.classList.add("answerBtn");
 
-    btn.dataset.correct =
-      answer === questions[currentQuestion].correct_answer ? "true" : "false";
-
     btn.addEventListener("click", checkAnswer);
     answersWrapper.appendChild(btn);
   });
@@ -111,9 +108,11 @@ function checkAnswer(e) {
   lastSelectedBtn = selectedBtn;
 
   selectedBtn.disabled = true;
-
   selectedBtn.style.backgroundColor = "orange";
-  const isCorrect = selectedBtn.dataset.correct === "true";
+
+  let correct_answer = decodeHTML(questions[currentQuestion].correct_answer);
+
+  const isCorrect = selectedBtn.textContent === correct_answer;
 
   currentTimeout = setTimeout(() => {
     const confirmAnswer = confirm("Do you want to confirm your answer?");
@@ -139,6 +138,11 @@ function checkAnswer(e) {
       startTimer(timer);
     }
   }, 2000);
+}
+
+function decodeHTML(str) {
+  const doc = new DOMParser().parseFromString(str, "text/html");
+  return doc.documentElement.textContent;
 }
 
 function shuffleArray(array) {

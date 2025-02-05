@@ -47,7 +47,7 @@
   background-color: #0056b3;
 }
 
-#next-question {
+.action-btn {
   flex-shrink: 0;
   align-self: flex-end;
   background-color: #007bff;
@@ -60,10 +60,14 @@
   transition: all 0.3s ease;
 }
 
-#next-question:hover {
+.action-btn :hover {
   background-color: transparent;
   border: 2px solid #0056b3;
   color: black;
+}
+
+#try-again {
+  align-self: unset;
 }
 
 .timer {
@@ -92,5 +96,18 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+}
+
+.final-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.result-info {
+  font-weight: bold;
 }

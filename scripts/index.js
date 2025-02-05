@@ -18,6 +18,9 @@ questionContainer.classList.add("hidden");
 
 const startQuiz = document.querySelector(".start-quiz");
 startQuiz.classList.add("hidden");
+
+const finalResults = document.querySelector(".final-results");
+
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -47,11 +50,7 @@ function displayStartButton() {
   startQuiz.classList.remove("hidden");
 
   const startQuizBtn = document.querySelector("#startBtn");
-  startQuizBtn.addEventListener("click", async function (e) {
-    e.preventDefault();
-
-    displayQuestion();
-  });
+  startQuizBtn.addEventListener("click", () => displayQuestion());
 }
 
 function displayQuestion() {
@@ -68,7 +67,7 @@ function displayQuestion() {
 
   console.log(question);
 
-  nextQuestionBtn.style.display = "none";
+  nextQuestionBtn.classList.add("hidden");
 
   const questionElement = document.querySelector(".question");
   questionElement.innerHTML = question;
@@ -124,7 +123,7 @@ function checkAnswer(e) {
         btn.removeEventListener("click", checkAnswer);
       });
 
-      nextQuestionBtn.style.display = "block";
+      nextQuestionBtn.classList.remove("hidden");
     } else {
       selectedBtn.style.backgroundColor = "";
       selectedBtn.disabled = false;
@@ -138,8 +137,31 @@ function shuffleArray(array) {
 }
 
 function nextQuestion() {
-  currentQuestion++;
-  displayQuestion();
+  const fifthQuestion = 4;
+  console.log(currentQuestion);
+  if (currentQuestion === fifthQuestion) {
+    nextQuestionBtn.innerHTML = "Finish Quiz";
+
+    nextQuestionBtn.removeEventListener("click", nextQuestion);
+    nextQuestionBtn.addEventListener("click", finishQuiz);
+  } else {
+    currentQuestion++;
+    displayQuestion();
+  }
+}
+
+function finishQuiz() {
+  const totalScore = document.querySelector("#total-score");
+  const message = document.querySelector("#message");
+
+  totalScore.textContent = score;
+  message.textContent = scoreMessages[score];
+
+  questionContainer.classList.add("hidden");
+  finalResults.classList.remove("hidden");
+
+  const tryAgainBtn = document.querySelector("#try-again");
+  tryAgainBtn.addEventListener("click", () => location.reload());
 }
 
 function startTimer(duration) {
@@ -165,3 +187,12 @@ function timeIsUp() {
   alert("Unfortunately you ran out of time.\nLet's move to the next question.");
   nextQuestion();
 }
+
+const scoreMessages = [
+  "Don't worry, you'll do better next time! Keep practicing!",
+  "Not great, but every attempt is a step forward. Try again!",
+  "You're getting there! A little more effort and you'll improve!",
+  "Good job! You're above average, but there's room for improvement!",
+  "Almost perfect! Just one more step to excellence!",
+  "Amazing! You nailed it! You're a quiz master!",
+];

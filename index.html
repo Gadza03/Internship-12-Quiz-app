@@ -57,8 +57,16 @@
 
         <p class="question"></p>
         <div class="answers"></div>
-        <button id="next-question">Next Question</button>
+
+        <button id="next-question" class="action-btn">Next Question</button>
       </div>
+    </div>
+
+    <div class="final-results hidden">
+      <div class="result-info">
+        <p><span id="total-score"></span>/5 - <span id="message"></span></p>
+      </div>
+      <button class="action-btn" id="try-again">Try Again</button>
     </div>
   </body>
   <script src="./scripts/index.js" type="module"></script>

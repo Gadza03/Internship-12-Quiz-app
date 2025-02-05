@@ -2,10 +2,13 @@ import { getQuestions } from "./api.js";
 
 let currentQuestion = 0;
 let questions = [];
+
 let score = 0;
 let timer;
+
 let interval;
 let currentTimeout;
+
 let lastSelectedBtn = null;
 
 const currentScore = document.querySelector(".score");
@@ -18,10 +21,8 @@ const nextQuestionBtn = document.querySelector("#next-question");
 nextQuestionBtn.addEventListener("click", nextQuestion);
 
 const questionContainer = document.querySelector(".questions-container");
-questionContainer.classList.add("hidden");
 
 const startQuiz = document.querySelector(".start-quiz");
-startQuiz.classList.add("hidden");
 
 const finalResults = document.querySelector(".final-results");
 
@@ -30,7 +31,9 @@ const submitButton = document.querySelector("#submit");
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
+
   submitButton.disabled = true;
+
   const category = document.querySelector("#category").value;
   const difficulty = document.querySelector("#difficulty").value;
   const type = document.querySelector("#type").value;
@@ -43,14 +46,21 @@ form.addEventListener("submit", async function (event) {
   if (type) url.searchParams.append("type", type);
 
   console.log(url.toString());
-  try {
-    questions = await getQuestions(url.toString());
-    displayStartButton();
-  } catch (error) {
-    console.error("Error fetching questions:", error);
-  }
+  fetchAndValidateQuestions(url);
   submitButton.disabled = false;
 });
+
+async function fetchAndValidateQuestions(url) {
+  try {
+    questions = await getQuestions(url.toString());
+    if (questions.length === 0) {
+      throw new Error("No questions founded for your filters");
+    }
+    displayStartButton();
+  } catch (error) {
+    alert(`${error}. Please try again.`);
+  }
+}
 
 function displayStartButton() {
   formWrapper.classList.add("hidden");
@@ -175,6 +185,38 @@ function finishQuiz() {
 
   const tryAgainBtn = document.querySelector("#try-again");
   tryAgainBtn.addEventListener("click", () => location.reload());
+
+  saveQuizResult();
+}
+
+function saveQuizResult() {
+  const date = new Date().toLocaleString();
+
+  const categorySelect = document.querySelector("#category");
+  const difficultySelect = document.querySelector("#difficulty");
+
+  const categoryValue = categorySelect.value;
+  const categoryName = categorySelect.selectedOptions[0].textContent;
+
+  const difficultyValue = difficultySelect.value;
+  const difficultyName = difficultySelect.selectedOptions[0].textContent;
+
+  console.log(categoryValue, categoryName); // "27", "Animals"
+  console.log(difficultyValue, difficultyName); // "easy", "Easy"
+
+  console.log(category);
+
+  const newResult = {
+    score: score,
+    total: 5,
+    category: categoryName,
+    difficulty: difficultyName,
+    date: date,
+  };
+
+  const quizHistory = JSON.parse(localStorage.getItem("quizHistory")) || [];
+  quizHistory.push(newResult);
+  localStorage.setItem("quizHistory", JSON.stringify(quizHistory));
 }
 
 function startTimer(duration) {

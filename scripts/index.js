@@ -28,6 +28,8 @@ const finalResults = document.querySelector(".final-results");
 
 const submitButton = document.querySelector("#submit");
 
+document.addEventListener("DOMContentLoaded", displayQuizHistory);
+
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -47,6 +49,7 @@ form.addEventListener("submit", async function (event) {
 
   console.log(url.toString());
   fetchAndValidateQuestions(url);
+
   submitButton.disabled = false;
 });
 
@@ -195,16 +198,8 @@ function saveQuizResult() {
   const categorySelect = document.querySelector("#category");
   const difficultySelect = document.querySelector("#difficulty");
 
-  const categoryValue = categorySelect.value;
   const categoryName = categorySelect.selectedOptions[0].textContent;
-
-  const difficultyValue = difficultySelect.value;
   const difficultyName = difficultySelect.selectedOptions[0].textContent;
-
-  console.log(categoryValue, categoryName); // "27", "Animals"
-  console.log(difficultyValue, difficultyName); // "easy", "Easy"
-
-  console.log(category);
 
   const newResult = {
     score: score,
@@ -217,6 +212,30 @@ function saveQuizResult() {
   const quizHistory = JSON.parse(localStorage.getItem("quizHistory")) || [];
   quizHistory.push(newResult);
   localStorage.setItem("quizHistory", JSON.stringify(quizHistory));
+  displayQuizHistory();
+}
+
+function displayQuizHistory() {
+  const historyContainer = document.querySelector(".quiz-history");
+  const quizHistory = JSON.parse(localStorage.getItem("quizHistory")) || [];
+  if (quizHistory.length === 0) {
+    historyContainer.innerHTML += "<p>There isn't any previous attempts.</p>";
+    return;
+  }
+
+  const existingList = historyContainer.querySelector("ul");
+  if (existingList) {
+    existingList.remove();
+  }
+  const list = document.createElement("ul");
+
+  quizHistory.forEach((quiz) => {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `Result: ${quiz.score}/${quiz.total} | Category: ${quiz.category} | Difficulty: ${quiz.difficulty} | Date: ${quiz.date}`;
+    list.appendChild(listItem);
+  });
+  list.classList.add("quiz-history-background");
+  historyContainer.appendChild(list);
 }
 
 function startTimer(duration) {

@@ -8,6 +8,10 @@ let interval;
 let currentTimeout;
 let lastSelectedBtn = null;
 
+const currentScore = document.querySelector(".score");
+
+const timerDisplay = document.querySelector(".timer");
+
 const formWrapper = document.querySelector(".form-container");
 
 const nextQuestionBtn = document.querySelector("#next-question");
@@ -80,7 +84,7 @@ function displayQuestion() {
 
   startTimer(20);
 
-  document.querySelector(".score").textContent = `Score: ${score}`;
+  currentScore.textContent = `Score: ${score}`;
 
   answers.forEach((answer) => {
     const btn = document.createElement("button");
@@ -118,6 +122,7 @@ function checkAnswer(e) {
       if (isCorrect) {
         selectedBtn.style.backgroundColor = "green";
         score++;
+        currentScore.textContent = `Score: ${score}`;
       } else {
         selectedBtn.style.backgroundColor = "red";
       }
@@ -170,21 +175,21 @@ function finishQuiz() {
 
 function startTimer(duration) {
   clearInterval(interval);
-
   timer = duration;
-  const timerDisplay = document.querySelector(".timer");
-
-  timerDisplay.textContent = `Time left: ${timer}s`;
+  displayTimeLeft();
 
   interval = setInterval(() => {
     timer--;
-    timerDisplay.textContent = `Time left: ${timer}s`;
-
+    displayTimeLeft();
     if (timer <= 0) {
       clearInterval(interval);
       timeIsUp();
     }
   }, 1000);
+}
+
+function displayTimeLeft() {
+  timerDisplay.textContent = `Time left: ${timer}s`;
 }
 
 function timeIsUp() {

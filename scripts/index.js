@@ -21,10 +21,12 @@ startQuiz.classList.add("hidden");
 
 const finalResults = document.querySelector(".final-results");
 
+const submitButton = document.querySelector("#submit");
+
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
-
+  submitButton.disabled = true;
   const category = document.querySelector("#category").value;
   const difficulty = document.querySelector("#difficulty").value;
   const type = document.querySelector("#type").value;
@@ -43,6 +45,7 @@ form.addEventListener("submit", async function (event) {
   } catch (error) {
     console.error("Error fetching questions:", error);
   }
+  submitButton.disabled = false;
 });
 
 function displayStartButton() {
@@ -124,6 +127,7 @@ function checkAnswer(e) {
       });
 
       nextQuestionBtn.classList.remove("hidden");
+      changeBtnOnLastQuestion();
     } else {
       selectedBtn.style.backgroundColor = "";
       selectedBtn.disabled = false;
@@ -137,16 +141,16 @@ function shuffleArray(array) {
 }
 
 function nextQuestion() {
-  const fifthQuestion = 4;
-  console.log(currentQuestion);
-  if (currentQuestion === fifthQuestion) {
-    nextQuestionBtn.innerHTML = "Finish Quiz";
+  currentQuestion++;
+  displayQuestion();
+}
+
+function changeBtnOnLastQuestion() {
+  if (currentQuestion === questions.length - 1) {
+    nextQuestionBtn.textContent = "Finish Quiz";
 
     nextQuestionBtn.removeEventListener("click", nextQuestion);
     nextQuestionBtn.addEventListener("click", finishQuiz);
-  } else {
-    currentQuestion++;
-    displayQuestion();
   }
 }
 

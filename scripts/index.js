@@ -8,9 +8,16 @@ let interval;
 let currentTimeout;
 let lastSelectedBtn = null;
 
+const formWrapper = document.querySelector(".form-container");
+
 const nextQuestionBtn = document.querySelector("#next-question");
 nextQuestionBtn.addEventListener("click", nextQuestion);
 
+const questionContainer = document.querySelector(".questions-container");
+questionContainer.classList.add("hidden");
+
+const startQuiz = document.querySelector(".start-quiz");
+startQuiz.classList.add("hidden");
 const form = document.querySelector("#quiz-form");
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -29,13 +36,28 @@ form.addEventListener("submit", async function (event) {
   console.log(url.toString());
   try {
     questions = await getQuestions(url.toString());
-    displayQuestion(questions);
+    displayStartButton();
   } catch (error) {
     console.error("Error fetching questions:", error);
   }
 });
 
+function displayStartButton() {
+  formWrapper.classList.add("hidden");
+  startQuiz.classList.remove("hidden");
+
+  const startQuizBtn = document.querySelector("#startBtn");
+  startQuizBtn.addEventListener("click", async function (e) {
+    e.preventDefault();
+
+    displayQuestion();
+  });
+}
+
 function displayQuestion() {
+  startQuiz.classList.add("hidden");
+  questionContainer.classList.remove("hidden");
+
   const question = questions[currentQuestion].question;
   let answers = [
     ...questions[currentQuestion].incorrect_answers,

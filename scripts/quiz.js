@@ -1,6 +1,6 @@
 import { getQuestions } from "./api.js";
 import { shuffleArray, decodeHTML } from "./utils.js";
-import { startTimer, stopTimer } from "./timer.js";
+import { startTimer, stopTimer, timer, timerHandler } from "./timer.js";
 import { saveQuizResult } from "./history.js";
 
 let questions = [];
@@ -52,7 +52,8 @@ function displayQuestion() {
   ];
 
   answers = shuffleArray(answers);
-  console.log(question);
+
+  lastSelectedBtn = null;
   nextQuestionBtn.classList.add("hidden");
 
   const questionElement = document.querySelector(".question");
@@ -75,6 +76,8 @@ function displayQuestion() {
 }
 
 function checkAnswer(e) {
+  if (timer <= 0) return;
+
   const selectedBtn = e.target;
 
   if (lastSelectedBtn && lastSelectedBtn !== selectedBtn) {
@@ -114,7 +117,8 @@ function checkAnswer(e) {
     } else {
       selectedBtn.style.backgroundColor = "";
       selectedBtn.disabled = false;
-      startTimer();
+      lastSelectedBtn = null;
+      timerHandler();
     }
   }, 2000);
 }
@@ -157,6 +161,9 @@ function finishQuiz() {
 }
 
 export function timeIsUp() {
+  if (lastSelectedBtn) {
+    return;
+  }
   if (currentQuestion === questions.length - 1) {
     alert("Unfortunately you ran out of time.\nThis was last question.");
     finishQuiz();

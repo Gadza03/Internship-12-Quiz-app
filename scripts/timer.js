@@ -1,10 +1,10 @@
 import { timeIsUp } from "./quiz.js";
 
-let timer;
+export let timer;
 let interval;
 const timerDisplay = document.querySelector(".timer");
 
-export function startTimer(duration = timer) {
+export function startTimer(duration) {
   stopTimer();
   timer = duration;
   updateDisplay();
@@ -21,6 +21,11 @@ export function startTimer(duration = timer) {
 
 export function stopTimer() {
   clearInterval(interval);
+}
+
+export function timerHandler() {
+  if (timer <= 0) timeIsUp();
+  else startTimer(timer);
 }
 
 function updateDisplay() {

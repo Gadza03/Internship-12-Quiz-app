@@ -24,8 +24,10 @@ export async function startQuizGame(url) {
   submitButton.disabled = true;
 
   questions = await getQuestions(url);
-  if (questions.lenght === 0) {
+  console.log(questions);
+  if (questions.length === 0) {
     alert("No questions found for your filters. Please, try again.");
+    submitButton.disabled = false;
     return;
   }
   displayStartButton();
@@ -125,7 +127,6 @@ function nextQuestion() {
 function changeBtnOnLastQuestion() {
   if (currentQuestion === questions.length - 1) {
     nextQuestionBtn.textContent = "Finish Quiz";
-
     nextQuestionBtn.removeEventListener("click", nextQuestion);
     nextQuestionBtn.addEventListener("click", finishQuiz);
   }

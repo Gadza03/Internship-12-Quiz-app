@@ -272,8 +272,15 @@ function displayTimeLeft() {
 }
 
 function timeIsUp() {
-  alert("Unfortunately you ran out of time.\nLet's move to the next question.");
-  nextQuestion();
+  if (currentQuestion === questions.length - 1) {
+    alert("Unfortunately you ran out of time.\nThis was last question.");
+    finishQuiz();
+  } else {
+    alert(
+      "Unfortunately you ran out of time.\nLet's move to the next question."
+    );
+    nextQuestion();
+  }
 }
 
 const scoreMessages = [

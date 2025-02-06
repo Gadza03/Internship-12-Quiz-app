@@ -24,7 +24,6 @@ export async function startQuizGame(url) {
   submitButton.disabled = true;
 
   questions = await getQuestions(url);
-  console.log(questions);
   if (questions.length === 0) {
     alert("No questions found for your filters. Please, try again.");
     submitButton.disabled = false;
@@ -103,6 +102,7 @@ function checkAnswer(e) {
         currentScore.textContent = `Score: ${score}`;
       } else {
         selectedBtn.style.backgroundColor = "red";
+        revealCorrectAnswer(correct_answer);
       }
 
       document.querySelectorAll(".answerBtn").forEach((btn) => {
@@ -117,6 +117,14 @@ function checkAnswer(e) {
       startTimer();
     }
   }, 2000);
+}
+
+function revealCorrectAnswer(correct_answer) {
+  const allAnswers = document.querySelectorAll(".answerBtn");
+  allAnswers.forEach((answer) => {
+    if (answer.textContent == correct_answer)
+      answer.style.backgroundColor = "green";
+  });
 }
 
 function nextQuestion() {

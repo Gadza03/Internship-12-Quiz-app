@@ -1,6 +1,6 @@
 .quiz-history-background {
   background-color: #fff;
-  padding: 2rem 3rem;
+  padding: 1rem;
   border-radius: 10px;
   border: 1px solid #88c1ff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -17,10 +17,14 @@
   margin: 30px 0 5px 0;
 }
 
-.quiz-history ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-  margin-bottom: 10px;
+.quiz-history table {
+  width: 50%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid rgb(202, 202, 202);
 }

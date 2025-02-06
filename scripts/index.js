@@ -216,26 +216,40 @@ function saveQuizResult() {
 }
 
 function displayQuizHistory() {
-  const historyContainer = document.querySelector(".quiz-history");
   const quizHistory = JSON.parse(localStorage.getItem("quizHistory")) || [];
-  if (quizHistory.length === 0) {
-    historyContainer.innerHTML += "<p>There isn't any previous attempts.</p>";
-    return;
-  }
 
-  const existingList = historyContainer.querySelector("ul");
-  if (existingList) {
-    existingList.remove();
-  }
-  const list = document.createElement("ul");
+  const historyContainer = document.querySelector(".quiz-history");
+  const existingTable = historyContainer.querySelector("table");
+  if (existingTable) existingTable.remove();
+
+  const newTable = document.createElement("table");
+  newTable.classList.add("quiz-history-background");
+
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML = `
+                <th>Result</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Date</th>`;
+  newTable.appendChild(headerRow);
 
   quizHistory.forEach((quiz) => {
-    const listItem = document.createElement("li");
-    listItem.innerHTML = `Result: ${quiz.score}/${quiz.total} | Category: ${quiz.category} | Difficulty: ${quiz.difficulty} | Date: ${quiz.date}`;
-    list.appendChild(listItem);
+    const row = document.createElement("tr");
+    const atributes = Object.values(quiz);
+
+    for (let i = 0; i < atributes.length; i++) {
+      const rowData = document.createElement("td");
+      if (i === 0) {
+        rowData.textContent = `${atributes[0]}/${atributes[1]}`;
+        i++;
+      } else {
+        rowData.textContent = `${atributes[i]}`;
+      }
+      row.appendChild(rowData);
+    }
+    newTable.appendChild(row);
   });
-  list.classList.add("quiz-history-background");
-  historyContainer.appendChild(list);
+  historyContainer.appendChild(newTable);
 }
 
 function startTimer(duration) {
